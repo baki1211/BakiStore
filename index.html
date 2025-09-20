@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BakiStore - Oyun İçi Para ve Hesap Satışı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            color: white;
+            min-height: 100vh;
+            background: 
+                linear-gradient(rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.90)),
+                url('https://images.unsplash.com/photo-1487111094912-921182c44b79?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwyfHxjb3NtaWMlMjBzcGFjZXxlbnwwfHx8Ymx1ZXwxNzU4Mzk2ODI5fDA&ixlib=rb-4.1.0&q=85');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .space-font {
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #2563eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(71, 85, 105, 1);
+            color: white;
+            padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+            border-radius: 6px;
+            width: 250px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(148, 163, 184, 1);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #60a5fa;
+            border: 1px solid #2563eb;
+        }
+
+        .btn-outline:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 5rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, 
+                rgba(59, 130, 246, 0.1) 0%, 
+                rgba(37, 99, 235, 0.05) 50%, 
+                rgba(29, 78, 216, 0.1) 100%);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(29, 78, 216, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Sections */
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section-alt {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 3rem;
+            text-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .featured-grid {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+
+        .all-products-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        /* Product Card */
+        .product-card {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                0 0 40px rgba(59, 130, 246, 0.1);
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+            border-color: rgba(59, 130, 246, 0.6);
+            box-shadow: 
+                0 16px 40px rgba(0, 0, 0, 0.4),
+                0 0 60px rgba(59, 130, 246, 0.2);
+            animation: cardFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: scale(1.05) translateY(0px); }
+            50% { transform: scale(1.05) translateY(-10px); }
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+            filter: brightness(1.1) contrast(1.1);
+        }
+
+        .badge {
+            position: absolute;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-featured {
+            background: #2563eb;
+            color: white;
+            top: 0.5rem;
+            right: 0.5rem;
+        }
+
+        .badge-stock {
+            background: #059669;
+            color: white;
+            top: 0.5rem;
+            left: 0.5rem;
+        }
+
+        .badge-type {
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            bottom: 0.5rem;
+            left: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .product-content {
+            padding: 1rem;
+        }
+
+        .product-title {
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .product-game {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #cbd5e1;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .star {
+            color: #fbbf24;
+            font-size: 1rem;
+        }
+
+        .rating-text {
+            color: #fbbf24;
+            font-size: 0.875rem;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem 1rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #60a5fa;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 3rem 0;
+            text-align: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            color: #94a3b8;
+        }
+
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #60a5fa;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(71, 85, 105, 1);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            backdrop-filter: blur(20px);
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-description {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            color: #cbd5e1;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(71, 85, 105, 1);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 6px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            background: transparent;
+            color: #cbd5e1;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .search-input {
+                width: 200px;
+            }
+            
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Icons */
+        .icon {
+            width: 1rem;
+            height: 1rem;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">B</div>
+                    <span class="logo-text">BakiStore</span>
+                </div>
+                
+                <div class="nav-buttons">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Ürün ara...">
+                    </div>
+                    <button class="btn btn-outline" onclick="openModal()">
+                        🔑 Giriş Yap
+                    </button>
+                    <button class="btn btn-primary">
+                        🛒 Sepet (0)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="space-font">BakiStore'a Hoş Geldiniz</h1>
+                <p>Oyun içi para ve hesap satışında güvenilir adres. Valorant VP'den CS2 hesaplara kadar tüm ihtiyaçlarınız burada.</p>
+                <button class="btn btn-primary" style="font-size: 1.125rem; padding: 0.75rem 2rem;">
+                    Ürünleri Keşfet
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Öne Çıkan Ürünler</h2>
+            <div class="product-grid featured-grid" id="featured-products">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- All Products -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Tüm Ürünler</h2>
+            <div class="product-grid all-products-grid" id="all-products">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-logo">
+                <div class="logo-icon">B</div>
+                <span class="logo-text">BakiStore</span>
+            </div>
+            <p class="footer-description">Oyun içi para ve hesap satışında güvenilir adres</p>
+            <div class="footer-links">
+                <a href="#">Hakkımızda</a>
+                <a href="#">İletişim</a>
+                <a href="#">Destek</a>
+                <a href="#">Gizlilik</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <h2 class="modal-title">Hesabınıza Giriş Yapın</h2>
+            <p class="modal-description">Demo amaçlı - şu anda çalışmıyor</p>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('login')">Giriş Yap</button>
+                <button class="tab" onclick="switchTab('register')">Kayıt Ol</button>
+            </div>
+            
+            <div id="login-tab" class="tab-content active">
+                <div class="form-group">
+                    <label class="form-label">E-posta</label>
+                    <input type="email" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Şifre</label>
+                    <input type="password" class="form-input">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;">Giriş Yap</button>
+            </div>
+            
+            <div id="register-tab" class="tab-content">
+                <div class="form-group">
+                    <label class="form-label">Kullanıcı Adı</label>
+                    <input type="text" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">E-posta</label>
+                    <input type="email" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Şifre</label>
+                    <input type="password" class="form-input">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;">Kayıt Ol</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample product data
+        const products = [
+            {
+                id: 1,
+                game_title: "Valorant",
+                product_name: "1000 VP",
+                product_type: "VP",
+                price: 85.0,
+                description: "Valorant Points - Oyun içi para birimi. Silah skinleri, ajanlar ve battle pass almak için kullanılır.",
+                image_url: "https://images.unsplash.com/photo-1595472968262-48209bf5b390",
+                stock_status: "Stokta",
+                rating: 4.9,
+                is_featured: true
+            },
+            {
+                id: 2,
+                game_title: "Valorant",
+                product_name: "2500 VP",
+                product_type: "VP",
+                price: 195.0,
+                description: "Valorant Points - Büyük VP paketi. Premium skinler ve bundle'lar için ideal.",
+                image_url: "https://images.unsplash.com/photo-1595472968262-48209bf5b390",
+                stock_status: "Stokta",
+                rating: 4.8,
+                is_featured: true
+            },
+            {
+                id: 3,
+                game_title: "Valorant",
+                product_name: "İmmortal Hesap",
+                product_type: "Hesap",
+                price: 1200.0,
+                description: "İmmortal rank hesabı. Tüm ajanlar açık, değerli skinler mevcut. Mail değiştirilebilir.",
+                image_url: "https://images.unsplash.com/photo-1595472968262-48209bf5b390",
+                stock_status: "Stokta",
+                rating: 4.7,
+                is_featured: true
+            },
+            {
+                id: 4,
+                game_title: "Counter-Strike 2",
+                product_name: "Prime Hesap",
+                product_type: "Hesap",
+                price: 450.0,
+                description: "CS2 Prime hesabı. Trust Factor yüksek, temiz geçmiş. Competitive oynamaya hazır.",
+                image_url: "https://images.unsplash.com/flagged/photo-1560177776-295b9cd779de",
+                stock_status: "Stokta",
+                rating: 4.6,
+                is_featured: true
+            },
+            {
+                id: 5,
+                game_title: "Fortnite",
+                product_name: "1000 V-Bucks",
+                product_type: "V-Bucks",
+                price: 75.0,
+                description: "Fortnite V-Bucks - Battle Pass, skinler ve emote'lar için kullanılır.",
+                image_url: "https://images.unsplash.com/photo-1589241062272-c0a000072dfa",
+                stock_status: "Stokta",
+                rating: 4.5,
+                is_featured: true
+            },
+            {
+                id: 6,
+                game_title: "Counter-Strike 2",
+                product_name: "Faceit Hesap (Level 8)",
+                product_type: "Hesap",
+                price: 850.0,
+                description: "Yüksek seviye Faceit hesabı. Level 8, temiz ban geçmişi, competitive oynamaya hazır.",
+                image_url: "https://images.unsplash.com/flagged/photo-1560177776-295b9cd779de",
+                stock_status: "Stokta",
+                rating: 4.8,
+                is_featured: false
+            },
+            {
+                id: 7,
+                game_title: "Fortnite",
+                product_name: "Nadir Skin Hesabı",
+                product_type: "Hesap",
+                price: 950.0,
+                description: "Eski sezon skinleri bulunan hesap. Renegade Raider, Black Knight ve daha fazlası!",
+                image_url: "https://images.unsplash.com/photo-1589241062272-c0a000072dfa",
+                stock_status: "Stokta",
+                rating: 4.9,
+                is_featured: false
+            },
+            {
+                id: 8,
+                game_title: "Roblox",
+                product_name: "800 Robux",
+                product_type: "Robux",
+                price: 65.0,
+                description: "Roblox oyun içi para birimi. Avatar customization ve premium özellikleri için.",
+                image_url: "https://images.unsplash.com/photo-1656639969809-ebc544c96955",
+                stock_status: "Stokta",
+                rating: 4.3,
+                is_featured: false
+            },
+            {
+                id: 9,
+                game_title: "Roblox",
+                product_name: "Premium Hesap",
+                product_type: "Hesap",
+                price: 320.0,
+                description: "Roblox Premium hesabı. Aylık Robux kazancı ve premium avantajları dahil.",
+                image_url: "https://images.unsplash.com/photo-1656639969809-ebc544c96955",
+                stock_status: "Stokta",
+                rating: 4.4,
+                is_featured: false
+            },
+            {
+                id: 10,
+                game_title: "Apex Legends",
+                product_name: "1000 Apex Coins",
+                product_type: "Coins",
+                price: 90.0,
+                description: "Apex Legends oyun içi para birimi. Battle Pass ve legendaries için.",
+                image_url: "https://images.unsplash.com/photo-1534423861386-85a16f5d13fd",
+                stock_status: "Stokta",
+                rating: 4.6,
+                is_featured: false
+            },
+            {
+                id: 11,
+                game_title: "Call of Duty",
+                product_name: "2400 CP",
+                product_type: "COD Points",
+                price: 180.0,
+                description: "Call of Duty Points - Battle Pass ve operator skinleri için kullanılır.",
+                image_url: "https://images.unsplash.com/photo-1542751371-adc38448a05e",
+                stock_status: "Stokta",
+                rating: 4.4,
+                is_featured: false
+            }
+        ];
+
+        // Get product type icon
+        function getProductIcon(productType) {
+            switch (productType) {
+                case 'VP':
+                case 'V-Bucks':
+                case 'Robux':
+                case 'Coins':
+                case 'COD Points':
+                    return '🪙';
+                case 'Hesap':
+                    return '👤';
+                default:
+                    return '🛒';
+            }
+        }
+
+        // Create product card HTML
+        function createProductCard(product) {
+            return `
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="${product.image_url}" alt="${product.game_title}" onerror="this.src='https://images.unsplash.com/photo-1542751371-adc38448a05e'">
+                        ${product.is_featured ? '<div class="badge badge-featured">Öne Çıkan</div>' : ''}
+                        <div class="badge badge-stock">${product.stock_status}</div>
+                        <div class="badge badge-type">
+                            ${getProductIcon(product.product_type)} ${product.product_type}
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">${product.product_name}</h3>
+                        <div class="product-game">${product.game_title}</div>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-rating">
+                            <span class="star">⭐</span>
+                            <span class="rating-text">${product.rating}</span>
+                            <span style="color: #94a3b8; font-size: 0.875rem;">• Güvenilir</span>
+                        </div>
+                    </div>
+                    <div class="product-footer">
+                        <div class="product-price">₺${product.price}</div>
+                        <button class="btn btn-primary" onclick="addToCart(${product.id})">
+                            🛒 Satın Al
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load products
+        function loadProducts() {
+            const featuredProducts = products.filter(product => product.is_featured);
+            const allProducts = products;
+
+            document.getElementById('featured-products').innerHTML = 
+                featuredProducts.map(product => createProductCard(product)).join('');
+            
+            document.getElementById('all-products').innerHTML = 
+                allProducts.map(product => createProductCard(product)).join('');
+        }
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function switchTab(tabName) {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // Add to cart function
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                alert(`${product.product_name} sepete eklendi!`);
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('loginModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+        });
+    </script>
+</body>
+</html>
